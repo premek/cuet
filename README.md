@@ -6,7 +6,7 @@ Minimalistic cue / background music player for theatre and live productions for 
 
 Free & ad free.
 
-![screenshot]()
-![ui description]()
+![](media/screenshot.png)
+![](media/guide.png)
 
 
