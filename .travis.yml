@@ -25,7 +25,7 @@ before_install:
 
         - if [[ -n "$TRAVIS_TAG" ]] ; then sudo sed -i 's/trusty/xenial/g' /etc/apt/sources.list && sudo apt-get update -q && sudo apt-get upgrade -y; fi
         - if [[ -n "$TRAVIS_TAG" ]] ; then sudo apt-get install -y  libzip-dev fakeroot ; fi
-        - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local luarocks; fi # update
+#- if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local luarocks; fi # update
         - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local love-release; fi
 
 
