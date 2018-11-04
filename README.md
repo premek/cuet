@@ -11,6 +11,8 @@ The tracks doesn't loop and the next track does not start automatically.
 
 The screen never turns off while the app is on, but it stops playing when you switch to other app.
 
+Written in lua using [love](http://love2d.org)
+
 ![](media/screenshot.png)
 ![](media/guide.png)
 
