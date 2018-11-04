@@ -21,7 +21,7 @@ before_install:
         - test -f .gitmodules && sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules && git submodule update --init --recursive || echo "no gitmodules"
         - export PATH="~/.luarocks/bin:$PATH" # - "`luarocks path --bin`" # execute the luarocks output - sets the paths for 'local' tree
         
-        - wget https://luarocks.org/releases/luarocks-3.0.4.tar.gz && tar zxpf luarocks-*.tar.gz && cd luarocks-* && ./configure && make && sudo make install && cd .. && rm -rfv luarocks*
+        - wget https://luarocks.org/releases/luarocks-2.3.0.tar.gz && tar zxpf luarocks-*.tar.gz && rm luarocks-*.tar.gz && cd luarocks-* && ./configure && make && sudo make install && cd .. && rm -rfv luarocks* # love-release is currently built on LuaRocks 2.3.0 LuaRocks API is not meant to be stable, and a future update could break love-release
         - luarocks install --local luacheck
 
         - if [[ -n "$TRAVIS_TAG" ]] ; then sudo sed -i 's/trusty/xenial/g' /etc/apt/sources.list && sudo apt-get update -q && sudo apt-get upgrade -y; fi
