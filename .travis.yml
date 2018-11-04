@@ -29,7 +29,8 @@ before_install:
         - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local love-release; fi
 
 
-script: "if [[ -n $TRAVIS_TAG ]] ; then ./build.sh dist; ./build.sh web; else ./build.sh; fi" # web only for tags
+#script: "if [[ -n $TRAVIS_TAG ]] ; then ./build.sh dist; ./build.sh web; else ./build.sh; fi" # web only for tags
+script: "if [[ -n $TRAVIS_TAG ]] ; then ./build.sh dist; else ./build.sh; fi" # dist only for tags
 deploy:
   provider: releases
   skip_cleanup: true
@@ -38,7 +39,7 @@ deploy:
     secure: "50czcJQJ+wd6vluTUiIW2uAy8kZJONEc1o2Bd1+VxWZ/oaJJwxmRRUYSOZRjYLhYycaAYoAYP3mIvvCS9Rs/6sfVN+AI/FfyHjHZnNn0cfVM6EO5tCdkihfpZ8fDpOv+3q3gZCRVVUuwKTgR7UH6xr4xzB+M7Cj1QuRkpXLqyLKVKFI52X4AIfoxwsDhSudJmstZagdcdJv6cpq7UiI6T6I/gafX/gcOR6IhaGkOhPjCfwjGxAr1kNjQtvjBzLpwCKO3yHYgIXV/9xG38PcKOCGLwSdyZC492yW1ZzsoNwhxHDQJZAigeTFwVwLx5dQuygd7FVKJH4y3YBMYpyinReVJ02Et1MeTiEWI2QIzmTqeapIIixIYv996zCDskNgFstrztILOo5E8od1+wDjUuyEGq7+pDNg3hJjsx7XZgvyl2R9uRRKfkdLNk2IoE5AQmfdl2o5lRMULDGgVdzHkdcf6b+TPT1xHc+z7p8oSqhdVBQjEdZ5UMkBAeVFuSoL6SqG7TbahjQHOXrdpYCBOcsH+q1TTDMwxtUnS/FrbX3VGf4jjiS06LtER/7DMvepx/Dw9w06VusBKObYmGrXHd2THnQG3XmZKsWB/WmF/Qzp/mqyhocU0sbdmCH+kJ9L+IpjT9gFbKRCVRtHRAXi2vJmQhiilOTOpE3kANTO3EAs="
   file_glob: true
   file:
-    - target/laugh-grow-fat*
+    - target/cuet*
   on:
     tags: true
     all_branches: true

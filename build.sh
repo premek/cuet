@@ -22,7 +22,7 @@ LV=$LVU".0"
 #version from git - first char has to be number
 V="`git describe --tags`"
 if [ $? -ne 0 ]; then  V=""; fi
-until [ -z "$V" ] || ["${V:0:1}" -eq "${V:0:1}" ] 2>/dev/null; do V="${V:1}"; done
+until [ -z "$V" ] || [ "${V:0:1}" -eq "${V:0:1}" ] 2>/dev/null; do V="${V:1}"; done
 if test -z "$V"; then V="0.0.1-snapshot"; fi;
 
 #FIXME this breaks so often
@@ -39,7 +39,7 @@ if [ "$1" == "skipcheck" ]; then
   shift
 else
   #unused variables has to start with _
-  luacheck . --codes --globals love --ignore "_.*" || { echo 'luacheck failed' ; exit 2; }
+  luacheck . --codes --globals love --ignore "_.*" --exclude-files target/** || { echo 'luacheck failed' ; exit 2; }
 fi
 
 
