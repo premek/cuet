@@ -12,7 +12,6 @@ addons:
   apt:
     packages:
       - lua5.1
-      - luarocks
       - imagemagick # android icons
 git:
     submodules: false # Handle git submodules yourself
@@ -21,12 +20,11 @@ before_install:
         - test -f .gitmodules && sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules && git submodule update --init --recursive || echo "no gitmodules"
         - export PATH="~/.luarocks/bin:$PATH" # - "`luarocks path --bin`" # execute the luarocks output - sets the paths for 'local' tree
         
+        - wget https://luarocks.org/releases/luarocks-3.0.4.tar.gz && tar zxpf luarocks-*.tar.gz && cd luarocks-* && ./configure && sudo make install
         - luarocks install --local luacheck
 
-        - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local luarocks; fi # update
         - if [[ -n "$TRAVIS_TAG" ]] ; then sudo sed -i 's/trusty/xenial/g' /etc/apt/sources.list && sudo apt-get update -q && sudo apt-get upgrade -y; fi
         - if [[ -n "$TRAVIS_TAG" ]] ; then sudo apt-get install -y  libzip-dev fakeroot ; fi
-        - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local luarocks; fi # update
         - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local love-release; fi
 
 
