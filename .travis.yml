@@ -1,0 +1,50 @@
+# curl -u premysl.vyhnal@gmail.com   -d '{"scopes":["public_repo"],"note":"XXX token name XXX"}'   https://api.github.com/authorizations
+
+
+language: android
+android:
+  components:
+    - build-tools-26.0.2
+    - android-26
+sudo: true # for libzip (which is needed for love-release) - until travis updates to newer image
+install: true
+addons:
+  apt:
+    packages:
+      - lua5.1
+      - luarocks
+      - imagemagick # android icons
+git:
+    submodules: false # Handle git submodules yourself
+
+before_install:
+        - test -f .gitmodules && sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules && git submodule update --init --recursive || echo "no gitmodules"
+        - export PATH="~/.luarocks/bin:$PATH" # - "`luarocks path --bin`" # execute the luarocks output - sets the paths for 'local' tree
+        
+        - luarocks install --local luacheck
+
+        - if [[ -n "$TRAVIS_TAG" ]] ; then sudo sed -i 's/trusty/xenial/g' /etc/apt/sources.list && sudo apt-get update -q && sudo apt-get upgrade -y; fi
+        - if [[ -n "$TRAVIS_TAG" ]] ; then sudo apt-get install -y  libzip-dev fakeroot ; fi
+        - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local luarocks; fi # update
+        - if [[ -n "$TRAVIS_TAG" ]] ; then luarocks install --local love-release; fi
+
+
+script: "if [[ -n $TRAVIS_TAG ]] ; then ./build.sh dist; ./build.sh web; else ./build.sh; fi" # web only for tags
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    # travis encrypt <token>
+    secure: "hdjCgtTqQLMJcrpPKTEKkGP0PejAgNDqOpLPwISDR7ObBE2XBb8n2aDZ62fX1gNvLEpCg2OC/l3Fxc8UpabKxvkIhyHtnIVUoPOChmb9KW7E/GhB2GKLD1Eg7LvBXd31AFaz9xuvHzUQCW+SNO04N5n+F3ZqeuuEDxy0cp3RcX25aP9DZdHLw9/euIMvdlvT5WM5J/2PKa49ADjOAmC/ToQD3AeXGoXCKXXUOxC2dB1txf9Wf1VWqmxe+Kbd5xE9kUliuVX9TS8K4LdKSw5iA7EDTsoExJQkVSAKcD5vP16xVlayrJQCdOFNixyyprGKqm54cVZvVvRxOE44ZExQAetNpOxNgDAgcKSPEezFXzSMmRLpeBpUjw5MEQAEduy2EdsRQhsMV/lOK70m2P9N4ktDA8xmZoGFUYEyTxR/de1Yuf1A4j2k+zQuanqE0AK5yCQsj4+dKEqogzvNTA6TGJI/irDnajGB4XAWICCxyildyYI3BM58azQ2PVPqd1kapOXCGG8ORR9ooOZKUV0DZ21b+kmy4mj7nJVnsvjzwvvc6coMQY/HcEmzZHFxkGPTgLX5bD44mjeI54u8ubQmhpIr6KKr/13Y1XPpTlKyMi0vkiJjpLthSSAEWzaLFrH2hzi4cs18e2JePQ+AGeydk1qYh0etrPD6b0gDdnLkINA="
+  file_glob: true
+  file:
+    - target/laugh-grow-fat*
+  on:
+    tags: true
+    all_branches: true
+after_success:
+- "[[ -n $TRAVIS_TAG ]] && ./build.sh deploy $TRAVIS_REPO_SLUG"
+env:
+  global:
+   # travis encrypt GH_TOKEN=<token>
+  - secure: "gWfpHa7h2JH1yqti2Ozscmes75CecJ79vIO61f70JXWlnkbRASCARONPsdO12g2GA2STZgqZGgF69cnAo+J83te8U1OyYH0SxSku1kqyb2XuOqtEX/Z52MKVWA7AxHK3YNazlMGQkTnCO/3RB6GC06rlaXFdyBngtqOM6jmd/C21fnlHWZQv+TxQzJyFmNozcWyOtK2dCY+DejNcbjE5aX3z0yHBMkINaeiE9PR14jDvcr03wnWWhrw0/tVwLcimXyJJcmLWMYREiOGRjVk0H1If1UNL6H5t+0bgEPzfNYeLMcDm4UrWgjSMzhY9+DqZKL0eSCJ/5ieRkRRffTYwNIAQX+MNOKtiEUiXB9KjfvBl2j4n0UaG39zyczDwB/V4PexT0mLLraRWW/UWgw/mYdgA5v5SUVveeI3FYeYEKO8+tjcEg07R5rIdJseakEdmqkq3Z0ls1F3ddPFwvwka6sosBVZ4qLN3j+DdWSZYztDAnwJbMURFRZP+ndXzfWEWxRyYUaeQYRxdpgUNMFBvp8S82fKYhlMD8vmrKjTaHcWQFaXqwt6U09hWmzbPprbzDFOU/2nTQyZwsh/5swZmkQ1e3qnRXqMGvi9JMbuZl6XXspBNKuXGB5Nyc2wB1G8aMH5ldY9wA0R7Dp+nb5Ibnbt2wFwsJBX2qGqdofi9w2Q="
